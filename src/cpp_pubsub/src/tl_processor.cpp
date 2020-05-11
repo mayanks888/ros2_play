@@ -25,15 +25,14 @@ void Processor::BBoxCallback(const traffic_light_msgs::msg::TrafficLightStruct::
     // RCLCPP_INFO(this->get_logger(), "melvin Bounding box : [%f], [%f], [%f], [%f], [%f]", msg->data[0], msg->data[1], msg->data[2], msg->data[3], msg->data[4]);
     RCLCPP_INFO(this->get_logger(), "-------------------------------"); //, msg->data.size());
     int j = 0;
-Image_Light lights_ref_obj;
-Image_Light detected_bboxes_obj;
+    Image_Light lights_ref_obj;
+    Image_Light detected_bboxes_obj;
 
-// #########################333
-typedef std::shared_ptr<Image_Light> LightPtr;
-LightPtr mytemp(new Image_Light);
-// Image_Light mytemp;
-// #############################
-
+    // #########################333
+    typedef std::shared_ptr<Image_Light> LightPtr;
+    LightPtr mytemp(new Image_Light);
+    // Image_Light mytemp;
+// ############################
     std::vector<Image_Light> lights_ref;
     std::vector<Image_Light> selected_bboxes;
     std::vector<Image_Light> detected_bboxes;
@@ -80,12 +79,17 @@ for(auto m : msg->detections)
 
 }
     }
+  const int cen=150;
   cv::Rect tmp, ctmp;
   tmp.x = msg->projection_roi.x_offset;
   tmp.y = msg->projection_roi.y_offset;
+  // tmp.x = (cen-int(msg->projection_roi.width/2));
+  // tmp.y = (cen-int(msg->projection_roi.height/2));
+
+  
   tmp.height =  msg->projection_roi.height;
   tmp.width =msg->projection_roi.width;
-  
+  std::cout<<"mayank projection  boxes :- .... :- "<<tmp << std::endl;
   lights_ref_obj.projection_roi = tmp;
   lights_ref_obj.rectified_roi = tmp;
   std::cout<<"before projection  boxes 46 :- .... :- " << std::endl;
@@ -115,19 +119,14 @@ for(auto m : msg->detections)
   }
   ////////////////////////////////////////////////////
   Select(lights_ref, detected_bboxes, &selected_bboxes);
-
-
-
   for (size_t i = 0; i < lights_ref.size(); ++i) {
     if (!selected_bboxes[i].is_detected ||
         !selected_bboxes[i].is_selected) {
     }
     cv::Rect region = selected_bboxes[i].rectified_roi;
     lights_ref[i].rectified_roi = region;
-    lights_ref[i].detect_class_id =
-        selected_bboxes[i].detect_class_id;
-    lights_ref[i].detect_score =
-        selected_bboxes[i].detect_score;
+    lights_ref[i].detect_class_id = selected_bboxes[i].detect_class_id;
+    lights_ref[i].detect_score = selected_bboxes[i].detect_score;
     lights_ref[i].is_detected = selected_bboxes[i].is_detected;
     lights_ref[i].is_selected = selected_bboxes[i].is_selected;
     std::cout<<selected_bboxes[i].detect_score<<std::endl;
@@ -275,7 +274,9 @@ void Processor::Select(std::vector<Image_Light> &hdmap_bboxes,
       // score * weight h
       score_matrix[row][col] =
           (0.05 + 0.4 * refined_bboxes[col].detect_score +
-           0.2 * distance_score + 0.2 * width_score + 0.2 * area_score);
+           0.9 * distance_score + 0.2 * width_score + 0.2 * area_score);
+
+      std::cout<<"score matric is "<<score_matrix[row][col]<<std::endl;
     }
   }
 

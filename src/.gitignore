@@ -1,2 +1,11 @@
 .DS_Store
 __pycache__
+log
+build
+install
+launch/*cache*
+data/*
+nohup.out
+domain_id
+*~
+*.pyc
