@@ -25,11 +25,13 @@ class MinimalSubscriber(Node):
         cv_img = bridge.imgmsg_to_cv2(image_msg, 'passthrough')
         # print("image shape is ", cv_img.shape)
         image_np = cv_img
+        width=int(msg.projection_roi.width/2)
+        height=int(msg.projection_roi.height/2)
         image_np = cv2.cvtColor(image_np, cv2.COLOR_BAYER_BG2BGR, 3) 
-        cv2.rectangle(image_np,(msg.projection_roi.x_offset,msg.projection_roi.y_offset),
-                      (msg.projection_roi.x_offset+msg.projection_roi.width,msg.projection_roi.y_offset+msg.projection_roi.height), (255,0,0), 2)
-        cv2.imshow('AI rectifier', image_np)
-        ch = cv2.waitKey(1)
+        # cv2.rectangle(image_np,(msg.projection_roi.x_offset,msg.projection_roi.y_offset),
+        #               (msg.projection_roi.x_offset+msg.projection_roi.width,msg.projection_roi.y_offset+msg.projection_roi.height), (255,0,0), 2)
+        # cv2.imshow('AI rectifier', image_np)
+        # ch = cv2.waitKey(1)
         ################################################
         ################################################
         # this is for cropped roi
@@ -38,7 +40,13 @@ class MinimalSubscriber(Node):
         cropped_roi=msg.cropped_roi
         print('new data',cropped_roi)
         # crop_img = img[y:y+h, x:x+w]
-        image_np = image_np[cropped_roi.y_offset:cropped_roi.y_offset+cropped_roi.height, cropped_roi.x_offset:cropped_roi.x_offset+cropped_roi.width]
+        crop_img = image_np[cropped_roi.y_offset:cropped_roi.y_offset+cropped_roi.height, cropped_roi.x_offset:cropped_roi.x_offset+cropped_roi.width]
+        
+        cY=int(cropped_roi.y_offset+(cropped_roi.height)/2)
+        cX=int(cropped_roi.x_offset+(cropped_roi.width)/2)
+        # cv2.circle(image_np, (cX, cY), 7, (0, 255, 255), -1)
+        cv2.circle(crop_img, (150, 150), 7, (0, 0, 255), -1)
+        cv2.rectangle(crop_img,(150-width,150-height),(150+width,150+height), (255,0,255), 2)
         cv2.imshow("cropped", crop_img)
         cv2.waitKey(1)
        ######################################################3

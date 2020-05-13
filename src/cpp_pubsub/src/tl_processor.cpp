@@ -81,10 +81,10 @@ for(auto m : msg->detections)
     }
   const int cen=150;
   cv::Rect tmp, ctmp;
-  tmp.x = msg->projection_roi.x_offset;
-  tmp.y = msg->projection_roi.y_offset;
-  // tmp.x = (cen-int(msg->projection_roi.width/2));
-  // tmp.y = (cen-int(msg->projection_roi.height/2));
+  // tmp.x = msg->projection_roi.x_offset;
+  // tmp.y = msg->projection_roi.y_offset;
+  tmp.x = (cen-int(msg->projection_roi.width/2));
+  tmp.y = (cen-int(msg->projection_roi.height/2));
 
   
   tmp.height =  msg->projection_roi.height;

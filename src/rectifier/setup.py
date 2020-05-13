@@ -35,6 +35,7 @@ setup(
         'console_scripts': [
             'rectifier = rectifier.rectify:main',
             'rectifier2 = rectifier.rectify_test:main',
+            'zrec = rectifier.recogniser:main',
         ],
     },
 )

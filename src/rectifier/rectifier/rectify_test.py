@@ -14,9 +14,13 @@ import torch
 import shutil
 import argparse
 from sys import platform
-from .models import *
-from .utils import *
-from .torch_utils import *
+
+from rectifier.models import *
+from rectifier.utils import *
+from rectifier.torch_utils import *
+# from .models import *
+# from .utils import *
+# from .torch_utils import *
 from std_msgs.msg import String
 from traffic_light_msgs.msg import TrafficLightStruct, Detection2D
 
@@ -150,9 +154,9 @@ class Rectifier(Node):
 
 def main(args=None):
     parser = argparse.ArgumentParser()
-    parser.add_argument('--cfg', type=str, default='/module/src/rectifier/rectifier/cfg/yolov3.cfg', help='*.cfg path')
+    parser.add_argument('--cfg', type=str, default='/home/mayank_s/playing_ros/c++/ros2_play_old/src/rectifier/rectifier/cfg/yolov3.cfg', help='*.cfg path')
     parser.add_argument('--names', type=str, default='data/coco.names', help='*.names path')
-    parser.add_argument('--weights', type=str, default='/module/src/rectifier/rectifier/weights/yolov3.pt',
+    parser.add_argument('--weights', type=str, default='/home/mayank_s/playing_ros/c++/ros2_play_old/src/rectifier/rectifier/weights/yolov3.pt',
                         help='weights path')
     parser.add_argument('--source', type=str, default='data/samples', help='source')
     parser.add_argument('--output', type=str, default='output', help='output folder')  # output folder
