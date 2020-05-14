@@ -41,11 +41,16 @@ class Recogniser(Node):
         # model.to(device).eval()
         #######################################################
         super().__init__('mytalker')
+        self._pub = self.create_publisher(TrafficLightStruct, '/snowball/perception/traffic_light/recogniser_output')
         # self._pub = self.create_publisher(TrafficLightStruct, '/tl_bbox_info')
         # self._pub = self.create_publisher(TrafficLightStruct, '/snowball/perception/traffic_light/color_output')
         self._cv_bridge = CvBridge()
         super().__init__('recogniser')
         self._sub = self.create_subscription(TrafficLightStruct, '/snowball/perception/traffic_light/processor', self.img_callback, 10)
+   
+        # self._pub = self.create_publisher(TrafficLightStruct, '/tl_bbox_info')
+        
+        
         print("ready to process recogniser----------------------------------------------------------")
 
     # Camera image callback
@@ -78,7 +83,7 @@ class Recogniser(Node):
         data=data.type(torch.cuda.FloatTensor)
         light_color = self.traffic_light[int(data)]
         c1, c2 = (int(selected_roi.x_offset), int(selected_roi.y_offset)), (int(selected_roi.x_offset+selected_roi.width), int(selected_roi.y_offset+selected_roi.height))
-        data=2
+        # data=2
         if data==0:#black
             cv2.rectangle(image_np, c1, c2, color=(255, 255, 255), thickness=2)
         elif data==1: #green
@@ -93,8 +98,10 @@ class Recogniser(Node):
         print("Inference Time", time_cost)
         # print("publishing bbox:- ", self.tl_bbox.data)
         # print("publishing bbox:- ", ppros_data.detections)
-
-        # self._pub.publish(ppros_data)
+        another_time_msg=self.get_clock().now().to_msg()  
+        selected_data.selected_box.header.stamp=another_time_msg  
+        selected_data.selected_box.color=int(data)
+        self._pub.publish(selected_data)
 
 
 def main(args=None):

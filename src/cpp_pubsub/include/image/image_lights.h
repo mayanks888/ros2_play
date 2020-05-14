@@ -8,7 +8,8 @@ enum TlColor {
   GREEN = 0,
   YELLOW = 1,
   RED = 2,
-  BLACK = 3
+  BLACK = 3,
+  UNKNOWN_COLOR=4
 };
 
 struct Image_Light {

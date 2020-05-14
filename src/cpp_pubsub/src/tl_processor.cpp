@@ -162,9 +162,9 @@ for(auto m : msg->detections)
         cv::imshow("image", croppedImage);
         cv::waitKey(1);
     }
-    // AINFO << region;
+    // std::cout << region;
   }
-    // AINFO << region;
+    // std::cout << region;
   
 
 

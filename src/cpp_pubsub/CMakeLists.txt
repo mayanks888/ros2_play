@@ -48,6 +48,9 @@ add_executable(processor src/tl_processor.cpp src/main.cpp include/hm/hungarian_
 ament_target_dependencies(processor traffic_light_msgs rclcpp std_msgs OpenCV cv_bridge)
 
 
+add_executable(reviser src/reviser.cpp src/main_reviser.cpp )
+ament_target_dependencies(reviser traffic_light_msgs rclcpp std_msgs OpenCV cv_bridge)
+
   # install the launch directory
 install(DIRECTORY
   launch
@@ -60,6 +63,7 @@ install(TARGETS
   mayrun
   snow_prs
   processor
+  reviser
   DESTINATION lib/${PROJECT_NAME})
 
   #install(DIRECTORY include/
