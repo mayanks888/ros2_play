@@ -38,7 +38,7 @@ void Processor::BBoxCallback(const traffic_light_msgs::msg::TrafficLightStruct::
     std::vector<Image_Light> detected_bboxes;
     cv::Rect temp;
     float score;
-std::cout<<"before projection  boxes 17:- .... :- " << std::endl;
+    // std::cout<<"before projection  boxes 17:- .... :- " << std::endl;
     if(!msg->detections.empty())
     {
 for(auto m : msg->detections)
@@ -49,42 +49,23 @@ for(auto m : msg->detections)
   mytemp->rectified_roi.height= m.height;
   mytemp->rectified_roi.width= m.width;
   mytemp->detect_score= m.score;
-
+  ///////////////////////////////////
+  cv::Rect &region = mytemp->rectified_roi;
+  region.x += msg->cropped_roi.x_offset;
+  region.y +=msg->cropped_roi.y_offset;
+  ////////////////////////////////////////
   mytemp->is_detected = true;
   detected_bboxes.push_back(*mytemp);
   ////////////////////////////////////////////
-  
-
-// ##############################################
-  //  temp.x = m.x_offset;
-  //  temp.y = m.y_offset;
-  //  temp.height = m.height;
-  //  temp.width = m.width ;
-  //  score = m.score;
-
-
-  //  std::cout<<"before projection  boxes 27 :- .... :- " << std::endl;
-  //  detected_bboxes_obj.debug_roi.push_back(temp); // = temp;
-  //  std::cout<<"before projection  boxes 29 :- .... :- " << std::endl;
-  //  detected_bboxes_obj.debug_roi_detect_scores.push_back(score); // = score;
-  //  std::cout<<"before projection  boxes 31 :- .... :- " << std::endl;
-  //  detected_bboxes.push_back(detected_bboxes_obj);
-  //  std::cout<<"before projection  boxes 23 :- .... :- " << std::endl;
-      //    lights_ref[0].debug_roi[j] = temp;
-      //    std::cout<<"before projection  boxes 35 :- .... :- " << std::endl;
-      //   //  std::cout<<"before projection  boxes 34:- .... :- " << std::endl;
-      // lights_ref[0].debug_roi_detect_scores[j]  = score;
-      // std::cout<<"before projection  boxes 38 :- .... :- " << std::endl;
-      // j++;
 
 }
     }
-  const int cen=150;
+  // const int cen=150;
   cv::Rect tmp, ctmp;
-  // tmp.x = msg->projection_roi.x_offset;
-  // tmp.y = msg->projection_roi.y_offset;
-  tmp.x = (cen-int(msg->projection_roi.width/2));
-  tmp.y = (cen-int(msg->projection_roi.height/2));
+  tmp.x = msg->projection_roi.x_offset;
+  tmp.y = msg->projection_roi.y_offset;
+  // tmp.x = (cen-int(msg->projection_roi.width/2));
+  // tmp.y = (cen-int(msg->projection_roi.height/2));
 
   
   tmp.height =  msg->projection_roi.height;
@@ -139,29 +120,42 @@ for(auto m : msg->detections)
   src = cv::Mat(msg ->raw_image.height, msg->raw_image.width, CV_8UC3);
   cv_bridge::CvImagePtr cv_ptr = cv_bridge::toCvCopy( msg->raw_image, sensor_msgs::image_encodings::BGR8);
   src = cv_ptr->image;
-
-    
   mat_ = src.clone();
-    ////////////////////////////////////
-  cv::Rect tmp_may;
-  tmp_may.x = msg->cropped_roi.x_offset;
-  tmp_may.y = msg->cropped_roi.y_offset;
-  tmp_may.height =  msg->cropped_roi.height;
-  tmp_may.width =msg->cropped_roi.width;
-  // lights_ref_obj.projection_roi = tmp;s
-  // cv::Rect myrect=msg->cropped_roi;
-    // cv:Rect my_rect ;
-    cv::Mat croppedImage = mat_(tmp_may);
-    ////////////////////////////////////////
-    bool should_show = true;
-    if (should_show)
-    {
-        cv::rectangle(croppedImage, selected_bboxes[0].rectified_roi, cv::Scalar(0, 255, 0), 2, 8, 0);
-        cv::rectangle(croppedImage, lights_ref_obj.projection_roi, cv::Scalar(0, 0, 255), 2, 8, 0);
-        // cv::resize(mat_, mat_, cv::Size(960, 540));z
-        cv::imshow("image", croppedImage);
-        cv::waitKey(1);
-    }
+  bool should_show = false;
+  if (should_show)
+  {
+      cv::Rect tmp_may;
+      tmp_may.x = msg->cropped_roi.x_offset;
+      tmp_may.y = msg->cropped_roi.y_offset;
+      tmp_may.height =  msg->cropped_roi.height;
+      tmp_may.width =msg->cropped_roi.width;
+    // lights_ref_obj.projection_roi = tmp;s
+    // cv::Rect myrect=msg->cropped_roi;
+      // cv:Rect my_rect ;
+      cv::Mat croppedImage = mat_(tmp_may);
+      cv::rectangle(croppedImage, selected_bboxes[0].rectified_roi, cv::Scalar(0, 255, 0), 2, 8, 0);
+      cv::rectangle(croppedImage, lights_ref_obj.projection_roi, cv::Scalar(0, 0, 255), 2, 8, 0);
+      // cv::resize(mat_, mat_, cv::Size(960, 540));z
+      cv::imshow("image", croppedImage);
+      cv::waitKey(1);
+  }
+  bool show_on_raw = true;
+  if (show_on_raw)
+  {
+    std::string img_name="TL_PROCESS";
+    std::cout<<"our selectoin roi :- .... :- "<<selected_bboxes[0].rectified_roi<<std::endl;
+    // std::cout<<"our projection roi :- .... :- "<<lights_ref_obj.projection_roi<<std::endl;
+      // cv::rectangle(mat_, lights_ref_obj.projection_roi, cv::Scalar(0, 255, 0), 2, 8, 0);
+      cv::rectangle(mat_, selected_bboxes[0].rectified_roi, cv::Scalar(0, 255, 0), 2, 8, 0);
+      cv::rectangle(mat_, lights_ref_obj.projection_roi, cv::Scalar(0, 0, 255), 2, 8, 0);
+      // cv::resize(mat_, mat_, cv::Size(960, 540));z
+      // cv::imshow("image", mat_);
+      cv::namedWindow(img_name,cv::WINDOW_NORMAL);
+      cv::resizeWindow(img_name,600,600);
+      cv::moveWindow(img_name,2,220);
+      cv::imshow(img_name, mat_);
+      cv::waitKey(1);
+  }
     // std::cout << region;
   }
     // std::cout << region;
