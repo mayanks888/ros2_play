@@ -8,10 +8,10 @@ import cv2
 class MinimalSubscriber(Node):
 
     def __init__(self):
-        super().__init__('minimal_subscriber_all_new')
-        self.subscription = self.create_subscription( TrafficLightStruct, '/tl_bbox_info_new', self.listener_callback, 10)
+        super().__init__('temp_subs')#always new node name remember"
+        self.subscription = self.create_subscription( TrafficLightStruct, '/snowball/perception/traffic_light/processor', self.listener_callback, 10)
         self.subscription
-        print("ready to process process----------------------------------------------------------")
+        print("ready to datasets storage----------------------------------------------------------")
 
 
     def listener_callback(self, msg):
@@ -37,16 +37,16 @@ class MinimalSubscriber(Node):
         # this is for cropped roi
 
     #    x_offset=1012, y_offset=415, height=300, width=
-        cropped_roi=msg.cropped_roi
+        cropped_roi=msg.selected_box
         print('new data',cropped_roi)
         # crop_img = img[y:y+h, x:x+w]
         crop_img = image_np[cropped_roi.y_offset:cropped_roi.y_offset+cropped_roi.height, cropped_roi.x_offset:cropped_roi.x_offset+cropped_roi.width]
         
-        cY=int(cropped_roi.y_offset+(cropped_roi.height)/2)
-        cX=int(cropped_roi.x_offset+(cropped_roi.width)/2)
-        # cv2.circle(image_np, (cX, cY), 7, (0, 255, 255), -1)
-        cv2.circle(crop_img, (150, 150), 7, (0, 0, 255), -1)
-        cv2.rectangle(crop_img,(150-width,150-height),(150+width,150+height), (255,0,255), 2)
+        # cY=int(cropped_roi.y_offset+(cropped_roi.height)/2)
+        # cX=int(cropped_roi.x_offset+(cropped_roi.width)/2)
+        # # cv2.circle(image_np, (cX, cY), 7, (0, 255, 255), -1)
+        # cv2.circle(crop_img, (150, 150), 7, (0, 0, 255), -1)
+        # cv2.rectangle(crop_img,(150-width,150-height),(150+width,150+height), (255,0,255), 2)
         cv2.imshow("cropped", crop_img)
         cv2.waitKey(1)
        ######################################################3

@@ -5,12 +5,21 @@
 
 
 enum TlColor {
-  GREEN = 0,
-  YELLOW = 1,
+  BLACK = 0,
+  GREEN = 1,
   RED = 2,
-  BLACK = 3,
+  YELLOW = 3,
   UNKNOWN_COLOR=4
 };
+
+// enum TlColor {
+//   GREEN = 0,
+//   YELLOW = 1,
+//   RED = 2,
+//   BLACK = 3,
+//   UNKNOWN_COLOR=4
+// };
+
 
 struct Image_Light {
   Image_Light() = default;

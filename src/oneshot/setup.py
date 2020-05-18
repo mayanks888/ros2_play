@@ -1,6 +1,6 @@
 from setuptools import setup
 
-package_name = 'py_pubsub'
+package_name = 'oneshot'
 
 setup(
     name=package_name,
@@ -20,11 +20,6 @@ setup(
     tests_require=['pytest'],
     entry_points={
         'console_scripts': [
-                'talker = py_pubsub.publisher_member_function:main',
-                'myrun = py_pubsub.checkmsg:main',
-                'play_run = py_pubsub.play_ros:main',
-                'play_may= py_pubsub.mayank_process:main',
-                'temp_datasets=py_pubsub.template_data_create:main',
         ],
-},
+    },
 )

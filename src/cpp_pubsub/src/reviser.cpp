@@ -12,13 +12,21 @@ Reviser::Reviser() : Node("reviser")
   void Reviser::topic_callback(const traffic_light_msgs::msg::TrafficLightStruct::SharedPtr msg)
   {
     // std::cout<<1<<std::endl;
+    //////////////////////////////////////////////////////////
+    // int color_info;
+    // color_info=msg->selected_box.color;
+    // std::cout<<"my colo info "<<color_info<<std::endl;
+    TlColor color_info;
+    color_info=status_col[msg->selected_box.color];
+    std::cout<<"my colo info "<<color_info<<std::endl;
+    // mytlcolor[2];
 
     ////////////////////////////////////////////////////////////////////////////////////
     typedef std::shared_ptr<Image_Light> LightPtr;
     // LightPtr mytemp(new Image_Light);
     LightPtr mylight (new Image_Light);
     std::vector<LightPtr> lights_ref ; //= new LightPtr;
-    mylight->color=RED;
+    mylight->color=color_info;
       // lights_ref.confidence=0.2;
     lights_ref.push_back(mylight);
     // ????????????????v

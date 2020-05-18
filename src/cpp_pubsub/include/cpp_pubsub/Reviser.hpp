@@ -44,6 +44,17 @@ private:
                                               {YELLOW, "yellow"},
                                               {BLACK, "black"}};
 
+    // std::map<TlColor, int> kColorint = {{UNKNOWN_COLOR, "unknown"},
+    //                                           {RED, "red"},
+    //                                           {GREEN, "green"},
+    //                                           {YELLOW, "yellow"},
+    //                                           {BLACK, "black"}};
+
+    // std::vector<std::string> mytlcolor {"BLACK", "GREEN", "RED"}; 
+    // std::vector<TlColor> status_map = {BLACK, RED, YELLOW, GREEN};
+    std::vector<TlColor> status_col = {BLACK, GREEN, RED,YELLOW};
+  
+
     std::string id="1";
     struct ReviseOption {
       // explicit ReviseOption(const double timestamp) : ts(timestamp) {}
