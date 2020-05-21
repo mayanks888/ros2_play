@@ -20,6 +20,8 @@ setup(
     tests_require=['pytest'],
     entry_points={
         'console_scripts': [
+            'myqatm = oneshot.qatm:main',
+            'univqatm = oneshot.qatm_2:main',
         ],
     },
 )
