@@ -6,6 +6,8 @@
 #include "std_msgs/msg/float32_multi_array.hpp"
 #include "opencv2/opencv.hpp"
 #include "traffic_light_msgs/msg/traffic_light_struct.hpp"
+#include "traffic_light_msgs/msg/traffic_light_data.hpp"
+
 // #include "hm/hungarian_bigraph_matcher.h"
 #include "image/image_lights.h"
 #include "cv_bridge/cv_bridge.h"
@@ -53,6 +55,7 @@ private:
     // std::vector<std::string> mytlcolor {"BLACK", "GREEN", "RED"}; 
     // std::vector<TlColor> status_map = {BLACK, RED, YELLOW, GREEN};
     std::vector<TlColor> status_col = {BLACK, GREEN, RED,YELLOW};
+    // std::vector<std::string> final_color ={BLACK, GREEN, RED,YELLOW};
   
 
     std::string id="1";
@@ -80,5 +83,6 @@ private:
     RCLCPP_DISABLE_COPY(Reviser)
 
     rclcpp::Subscription<traffic_light_msgs::msg::TrafficLightStruct>::SharedPtr rev_subscription_;
+    rclcpp::Publisher<traffic_light_msgs::msg::TrafficLightData>::SharedPtr reviser_pub;
 
 };

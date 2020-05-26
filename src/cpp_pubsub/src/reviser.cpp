@@ -3,6 +3,8 @@
 Reviser::Reviser() : Node("reviser")
   {
     rev_subscription_ = this->create_subscription<traffic_light_msgs::msg::TrafficLightStruct>("/snowball/perception/traffic_light/recogniser_output", 10, std::bind(&Reviser::topic_callback, this, _1));
+    reviser_pub = this->create_publisher<traffic_light_msgs::msg::TrafficLightData>("/snowball/perception/traffic_light/reviser", 10);
+
     std::cout<<"reviser process___________________________________________________"<<std::endl;
     // auto callback = std::bind(&MinimalSubscriber::topic_callback, this, _1);
     // subscription_ = this->create_subscription<traffic_light_msgs::msg::TrafficLightStruct>("/tl_bbox_info_new", 10, callback);
@@ -31,6 +33,7 @@ Reviser::Reviser() : Node("reviser")
     lights_ref.push_back(mylight);
     // ????????????????v
     option.ts=msg->selected_box.header.stamp.sec;
+    std::cout <<"mytime"<<option.ts<<std::endl;
   /////////////////////////
   // lights_ref.color.Tlcolor=red;
     for (size_t i = 0; i < lights_ref.size(); ++i) {
@@ -77,4 +80,20 @@ Reviser::Reviser() : Node("reviser")
     }
     for (auto x : color_map_) 
       std::cout << "mayank_data "<<x.first << " " << x.second << std::endl; 
+
+    auto rev_result = traffic_light_msgs::msg::TrafficLightData();
+    rev_result.color= kColorStr[lights_ref[0]->color];
+    // rev_result.trafficlight_id=id;
+    rev_result.trafficlight_id=msg->selected_box.id;
+    rev_result.trafficlight_roi.x_offset=msg->selected_box.x_offset;
+    rev_result.trafficlight_roi.y_offset=msg->selected_box.y_offset;
+    rev_result.trafficlight_roi.height=msg->selected_box.height;
+    rev_result.trafficlight_roi.width=msg->selected_box.width;
+    std::cout<<"mydata"<<msg->header.stamp.sec<<std::endl;
+    // std::cout<<"mydata";
+    rev_result.header.stamp=msg->selected_box.header.stamp;
+    // rev_result.header=msg->header;
+    reviser_pub->publish(rev_result);
+
+
 }
