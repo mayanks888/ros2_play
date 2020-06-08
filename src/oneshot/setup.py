@@ -22,6 +22,7 @@ setup(
         'console_scripts': [
             'myqatm = oneshot.qatm:main',
             'univqatm = oneshot.qatm_2:main',
+            '3myqatm = oneshot.my_qatm_3:main',
         ],
     },
 )

@@ -29,30 +29,29 @@ class QATM(Node):
 # def __init__(self):
   def __init__(self, args_):
       self.opt = args_
-
+      # with open(os.path.join(sys.path[0], "my_file.txt"), "r") as f:
+      #   print(f.read())
       # loading model
-      self.model = CreateModel(model=models.vgg19(pretrained=True).features, alpha=self.opt.alpha, use_cuda=self.opt.cuda)
-      # self.template_root = "/home/mayank_s/Desktop/template/saved_temp_img"
-      # # input_folder = '/home/mayank_s/Desktop/template/saved_temp_cropped'
-      # self.csv_name = '/home/mayank_s/Desktop/template/final_snowball.csv'
-      ############################################33333
+      self.model_1 = models.vgg19(pretrained=False)
+      print('mysysis',sys.path)
+      sys.path[0]="src/oneshot/oneshot"
+      # model.state_dict(''/home/mayank_s/Desktop/template/model/vgg19-dcbb9e9d.pth'')
+      self.model_1.load_state_dict(torch.load(os.path.join(sys.path[0], "weights/vgg19-dcbb9e9d.pth")))
+      # self.model_1.load_state_dict(torch.load('/myspc/install/oneshot/oneshot/weights/vgg19-dcbb9e9d.pth'))
+      self.model = CreateModel(model=self.model_1.features, alpha=self.opt.alpha, use_cuda=self.opt.cuda)
+      # self.model = CreateModel(model=models.vgg19(pretrained=True).features, alpha=self.opt.alpha, use_cuda=self.opt.cuda)
       # self.template_root = "/home/mayank_s/playing_ros/c++/ros2_play_old/src/oneshot/oneshot/data/farm_1/saved_temp_img"
-      self.template_root = "/home/mayank_s/playing_ros/c++/ros2_play_old/src/oneshot/oneshot/data/farm_2/farm_2_images2"
-      # self.template_root = "/module/src/oneshot/oneshot/data/gstreet/googlestreet"
+      self.template_root = os.path.join(sys.path[0], "data/farm_1/saved_temp_img")
       # input_folder = '/home/mayank_s/Desktop/template/saved_temp_cropped'
-      # self.csv_name = self.opt.temp_csv
       
-      # self.csv_name = "/home/mayank_s/playing_ros/c++/ros2_play_old/src/oneshot/oneshot/data/farm_1/final_snowball.csv"
-      self.csv_name = "/home/mayank_s/playing_ros/c++/ros2_play_old/src/oneshot/oneshot/data/farm_2/farm_2_images2_scaled.csv"
-      # self.csv_name = "/module/src/oneshot/oneshot/data/gstreet/googlestreet_eval_farm.csv"
-      #####################################################
+      self.csv_name =os.path.join(sys.path[0], "data/farm_1/final_snowball.csv")
       self.ref_id = 'tl1001'
       self.show=False
       self.df = pd.read_csv(self.csv_name)
       # ///////////////////////////////////////
-      
-      super().__init__('qatm_subs')#always new node name remember"
-      # self.subscription = self.create_subscription( TrafficLightStruct, '/snowball/perception/traffic_light/processor', self.listener_callback, 10)
+   
+      super().__init__('qatm_subs_1')#always new node name remember"
+      # self.subscription = self.create_subscription( TrafficLightStruct, '/snowball/perception/traffic_light/recogniser_output', self.listener_callback, 10)
       self.subs_prep = self.create_subscription( TrafficLightStruct, '/snowball/perception/traffic_light/preprocessor', self.listener_callback, 10)
       # self.subscription = self.create_subscription(TFMessage, '/tf', self.listener_callback, 10)
       self.subs_tf = self.create_subscription(TFMessage, '/tf', self.callback, 10)
@@ -120,10 +119,10 @@ class QATM(Node):
         #       cv2.destroyAllWindows()
         #   # cv2.waitKey(1)
         #   cv2.destroyAllWindows()
-      cv2.imwrite("/home/mayank_s/playing_ros/c++/ros2_play_old/src/oneshot/oneshot/data/temp/mytemp.jpg", frame)
+      cv2.imwrite(os.path.join(sys.path[0], "data/temp/mytemp.jpg"), frame)
       ##############################################333
       #saving croped images
-      image_path="/home/mayank_s/playing_ros/c++/ros2_play_old/src/oneshot/oneshot/data/sample/sample.jpg"
+      image_path=os.path.join(sys.path[0], "data/sample/sample.jpg")
       # image_path="/home/mayank_s/playing_ros/c++/ros2_play_old/src/oneshot/oneshot/data/sample/"+self.position+".jpg"
       cv2.imwrite(image_path, crop_img)
 
@@ -131,12 +130,13 @@ class QATM(Node):
       template_dir =self.opt.template_images_dir
       # image_path =root+"/"+filename
     #   dataset = ImageDataset_3(Path(template_dir), crop_img, thresh_csv='src/oneshot/oneshot/thresh_template.csv')
-      dataset = ImageDataset_2(Path(template_dir), image_path, thresh_csv='/home/mayank_s/playing_ros/c++/ros2_play_old/src/oneshot/oneshot/data/thresh_template.csv')
+      dataset = ImageDataset_2(Path(template_dir), image_path, thresh_csv=os.path.join(sys.path[0], "data/thresh_template.csv"))
     #   t1=time.time()
       # scores, w_array, h_array, thresh_list = run_multi_sample(model, dataset)
       # self.model = CreateModel(model=models.vgg19(pretrained=True).features, alpha=self.opt.alpha, use_cuda=self.opt.cuda)
       # mymodel=self.model
       model = copy.deepcopy(self.model)
+      # model =self.model
       scores, w_array, h_array, thresh_list = run_one_sample_mayank(model, dataset)
       # scores, w_array, h_array, thresh_list = run_one_sample_mayank(self.model, dataset)
       # scores, w_array, h_array, thresh_list=run_one_sample(model, dataset['template'], dataset['image'], dataset['image_name'])
@@ -163,9 +163,9 @@ def main(args=None):
     parser.add_argument('--cuda',default=True, action='store_true')
     parser.add_argument('-s', '--sample_image', default='data/sample/gwm_1284.jpg')
     # parser.add_argument('-t', '--template_images_dir', default='/home/mayank_sati/Desktop/qatm_data/template/')
-    parser.add_argument('-t', '--template_images_dir', default='/home/mayank_s/playing_ros/c++/ros2_play_old/src/oneshot/oneshot/data/temp/')
+    parser.add_argument('-t', '--template_images_dir', default=os.path.join(sys.path[0], "data/temp/"))
     parser.add_argument('--alpha', type=float, default=25)
-    parser.add_argument('--thresh_csv', type=str, default='/home/mayank_s/playing_ros/c++/ros2_play_old/src/oneshot/oneshot/data/thresh_template.csv')
+    parser.add_argument('--thresh_csv', type=str, default=os.path.join(sys.path[0], "data/thresh_template.csv"))
     opt = parser.parse_args()
 
     # sssssssssssssssssssssssssssssss

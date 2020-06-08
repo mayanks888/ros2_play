@@ -109,7 +109,7 @@ def find_template_2(ref_id,ref_pos, newdf=""):
     #     # flag=True
     #     return 1,1
 
-    if ((min_x_dist <2 or min_y_dist <2) and min_dist_val < 10):
+    if ((min_x_dist <20000 or min_y_dist <20000) and min_dist_val < 20000):
 
     # if min_x_dist > 5 and  min_y_dist > 5:
         # print(np.amin(total_dif)

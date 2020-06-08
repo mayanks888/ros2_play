@@ -25,6 +25,8 @@ setup(
                 'play_run = py_pubsub.play_ros:main',
                 'play_may= py_pubsub.mayank_process:main',
                 'temp_datasets=py_pubsub.template_data_create:main',
+                'read_image=py_pubsub.reading_and_display_ros_images:main',
+                'read_img_loc=py_pubsub.reading_image_location_ros2:main',
         ],
 },
 )
